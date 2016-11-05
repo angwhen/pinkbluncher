@@ -7,7 +7,14 @@ WINDOWHEIGHT = 700
 boardArr = np.array([10,100])
 posX = 5 #chracter position 
 posY = 0
+score = 0
+fullness = 0
+numLives = 0
 
+def initBoardArr():
+	global boardArr
+	#initialize boardArr 
+	
 def main():
     global FPSCLOCK, DISPLAYSURF, BASICFONT, BIGFONT
     pygame.init()
@@ -16,7 +23,8 @@ def main():
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     BIGFONT = pygame.font.Font('freesansbold.ttf', 100)
     pygame.display.set_caption('Cotton Candy')
-
+	initBoardArr()
+	renderScreen()
     while True: # game loop
         runGame()
         showTextScreen('Game Over')
@@ -42,7 +50,6 @@ def runGame():
 					if(direction == "left"):
 						move(direction)
 					direction = "left"
-				
                 elif (event.key == K_RIGHT or event.key == K_d) :
 					if(direction == "right"):
 						move(direction)
@@ -60,9 +67,20 @@ def canEat(x,y):
 	#return true or false based on if can eat
 
 def eat(direction):
+	global posX,posY,boardArr, score, fullness
 	#say where the goal to eat is
 	if canEat(goal):
-		#thingsa
+		fullness +=1
+		#other eating things
 		
 def move(direction):
-	global characterX
+	global posX, posY,boardArr
+	#if moving downwards move the screen downwards
+	renderScreen()
+
+def renderScreen():
+	global posX,posY,boardArr
+	#draw the screen where it should be
+	
+def die():
+	#what happens when you die
