@@ -64,10 +64,14 @@ def runGame():
                     eat(direction)
 
 def canEat(x,y):
+	
 	#return true or false based on if can eat
 
 def eat(direction):
-	global posX,posY,boardArr, score, fullness
+	global posX,posY,boardArr, score, 
+	goal = (0,0)
+	if (direction == "right"):
+		goal = ()
 	#say where the goal to eat is
 	if canEat(goal):
 		fullness +=1
