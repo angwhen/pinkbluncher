@@ -109,7 +109,8 @@ def renderScreen():
     PINK = (255,0,128)
     PURPLE = (147,112,219)
     BLUE = (135,216,250)
-    color = (255,255,255)
+    WHITE = (255,255,255)
+    color = WHITE
     for i in xrange(startPos,boardArrHeight):
 	for j in xrange(0,10):
 	    tileType = boardArr[i,j]
@@ -119,7 +120,8 @@ def renderScreen():
 		color = PURPLE
 	    elif tileType == 3:
 		color = BLUE
-	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,300+i*50,50,50),5)
+	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,300+i*50,50,50),0)
+	    pygame.draw.rect(DISPLAYSURF,WHITE,pygame.Rect(j*50,300+i*50,50,50),5)
     pygame.display.flip()
 	    
     #draw the screen where it should be
