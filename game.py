@@ -105,12 +105,22 @@ def renderScreen():
     renderCharacter()
     startPos = posY-6
     if startPos < 0: 
-	startPos = 0:
+	startPos = 0
+    PINK = (255,0,128)
+    PURPLE = (147,112,219)
+    BLUE = (135,216,250)
+    color = (255,255,255)
     for i in xrange(startPos,boardArrHeight):
 	for j in xrange(0,10):
 	    tileType = boardArr[i,j]
 	    if tileType == 1:
-	    	pygame.draw.rect(DISPLAYSURF,(255,0,128),(300+i*50,j*50),5)
+		color = PINK
+	    elif tileType == 2:
+		color = PURPLE
+	    elif tileType == 3:
+		color = BLUE
+	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,300+i*50,50,50),5)
+    pygame.display.flip()
 	    
     #draw the screen where it should be
     
