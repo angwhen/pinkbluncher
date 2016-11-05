@@ -1,6 +1,7 @@
 import random, time, pygame, sys
 import numpy as np
 from pygame.locals import *
+
 WINDOWWIDTH = 500
 WINDOWHEIGHT = 700
 boardArr = np.array([200,10])
@@ -25,6 +26,7 @@ def main():
     print "in main"
     FPSCLOCK = pygame.time.Clock()
     DISPLAYSURF = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
+    DISPLAYSURF.fill((255,255,255))
     BASICFONT = pygame.font.Font('freesansbold.ttf', 18)
     BIGFONT = pygame.font.Font('freesansbold.ttf', 100)
     pygame.display.set_caption('Cotton Candy')
@@ -84,9 +86,25 @@ def move(direction):
     global posX, posY,boardArr
     #if moving downwards move the screen downwards
     renderScreen()
+
+def renderCharacter():
+    global posX,posY,boardArr, DISPLAYSURF,direction
+    myimage = pygame.image.load("rightCharacter.png")
+    imagerect = myimage.get_rect()
+    if direction == "right":
+	myimage = pygame.image.load("rightCharacter.png")
+	imagerect = myimage.get_rect()
+    DISPLAYSURF.fill((255,255,255))
+    print "hello"
+    DISPLAYSURF.blit(myimage, imagerect)
+    pygame.display.flip()
+	
 def renderScreen():
-    global posX,posY,boardArr
+    global posX,posY,boardArr, DISPLAYSURF
+    renderCharacter()
     #draw the screen where it should be
+    
+
 #def die():
     #what happens when you die
 
