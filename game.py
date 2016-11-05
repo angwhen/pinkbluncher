@@ -34,16 +34,17 @@ def runGame():
 	global posX, posY
 	#setup variables and stuff
 	direction = "down"
-	if direction == "right":
-		#make picture of character moving right
-	elif direction == "left":
-		#make picture of character moving left
-	elif direction == "up":
-		#pic of character looking up
-	else: #direction is down
-		#picture of character moving down
+	
 		
 	while True: #game loop
+		if direction == "right":
+		#make picture of character moving right
+		elif direction == "left":
+		#make picture of character moving left
+		elif direction == "up":
+		#pic of character looking up
+		else: #direction is down
+		#picture of character moving down
 		 for event in pygame.event.get(): # event handling loop
             if event.type == KEYDOWN:
                 if (event.key == K_LEFT or event.key == K_a):
