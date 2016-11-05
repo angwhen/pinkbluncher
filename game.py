@@ -4,7 +4,8 @@ from pygame.locals import *
 
 WINDOWWIDTH = 500
 WINDOWHEIGHT = 700
-boardArr = np.array([200,10])
+boardArrHeight = 200;
+boardArr = np.array([boardArrHeight,10])
 posX = 5 #chracter position
 posY = 0
 direction = "down"
@@ -15,7 +16,7 @@ def initBoardArr():
     global boardArr
     #initialize boardArr
     choices = [1,2,3,4,5] #pink, purple, blue, 100 point jewels, 200 point jewels
-    boardArr = np.random.choice(choices,(200,10),p=[0.3,0.3,0.3,0.05,0.05])
+    boardArr = np.random.choice(choices,(boardArrHeight,10),p=[0.3,0.3,0.3,0.05,0.05])
     print boardArr
     #print "HIIII"
     #print "hey"
@@ -100,8 +101,17 @@ def renderCharacter():
     pygame.display.flip()
 	
 def renderScreen():
-    global posX,posY,boardArr, DISPLAYSURF
+    global posX,posY,boardArr, boardArrHeight, DISPLAYSURF
     renderCharacter()
+    startPos = posY-6
+    if startPos < 0: 
+	startPos = 0:
+    for i in xrange(startPos,boardArrHeight):
+	for j in xrange(0,10):
+	    tileType = boardArr[i,j]
+	    if tileType == 1:
+	    	pygame.draw.rect(DISPLAYSURF,(255,0,128),(300+i*50,j*50),5)
+	    
     #draw the screen where it should be
     
 
