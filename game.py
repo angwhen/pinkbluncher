@@ -149,7 +149,7 @@ def move(direction):
 	goal = (posY+1,posX)
     if canMove(goal):
         if direction == "right":
-            posX += 1
+            posX += 1 
         elif direction == "left":
 	    posX = posX -1
         elif direction == "down":
