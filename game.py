@@ -1,6 +1,7 @@
 import random, time, pygame, sys
 import numpy as np
 from pygame.locals import *
+import pyjs
 
 WINDOWWIDTH = 500
 WINDOWHEIGHT = 700
