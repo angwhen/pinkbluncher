@@ -10,7 +10,7 @@ posX = 5 #chracter position
 posY = 0
 direction = "down"
 score = 0
-fullness = 0
+stomachSpace = 100
 numLives = 0
 def initBoardArr():
     global boardArr
@@ -39,22 +39,8 @@ def main():
         showTextScreen('Game Over')
 def runGame():
     global posX, posY,direction
-    #setup variables and stuff
-    #direction = "down"
     while True:
-        #game loop
-        #if direction == "right":
-        #    print "HI"
-        #make picture of character moving right
-        #elif direction == "left":
-        #    print "HI"
-        #make picture of character moving left
-        #elif direction == "up":
-        #    print "HI"
-        #pic of character looking up
-        #else: #direction is down
-        #    print "HI"
-        #picture of character moving down
+	collapse() #may be superfluous
         for event in pygame.event.get(): # event handling loop
             if event.type == KEYDOWN:
                 if (event.key == K_LEFT or event.key == K_a):
@@ -93,7 +79,7 @@ def canEat(goal):
     #return true or false based on if can eat
 
 def eat(direction):
-    global posX,posY,boardArr,fullness, score
+    global posX,posY,boardArr,stomachSpace, score
     goal = (0,0)
     if direction == "right":
         goal = (posY,posX+1)
@@ -104,7 +90,7 @@ def eat(direction):
 	
     #say where the goal to eat is
     if canEat(goal): 
-	fullness +=1
+	stomachSpace -= 1
 	row = goal[0]
 	col = goal[1]
 	getEatGroup(goal,boardArr[row,col]) 
@@ -114,13 +100,14 @@ def eat(direction):
     renderScreen()
 
 def getEatGroup(goal,tileType):
-    global boardArr
+    global boardArr, score
     group = []
     row = goal[0]
     col = goal[1]
     print "tile type is: ",boardArr[row,col]
     if boardArr[row][col] == tileType:
     	boardArr[row][col] = 0
+	score += 1
     if col+1 < 10 and boardArr[row][col+1] == tileType:
         getEatGroup((row,col+1),tileType)
     if col-1 >= 0 and boardArr[row][col-1] == tileType:
@@ -135,7 +122,7 @@ def collapse():
    global posX,posY,boardArr
    for i in xrange(0,boardArrHeight-1):
 	for j in xrange(0,10):
-	    if boardArr[i+1,j] == 0:
+	    if boardArr[i+1,j] == 0 and not(i+1==posY and j ==posX):
 		boardArr[i+1,j] = boardArr[i,j]
 		boardArr[i,j] = 0
    collapseCharacter()
@@ -168,9 +155,18 @@ def move(direction):
         elif direction == "down":
 	    posY += 1
     #if moving downwards move the screen downwards
-	collapseCharacter()
+	collapse()
         renderScreen()
 
+def renderScoreAndStomach():
+    if pygame.font:
+        font = pygame.font.Font(None, 36)
+	scoreText = "Score: %d  Belly Space: %d" %(score,stomachSpace)
+        text = font.render(scoreText, 1, (0, 0, 0))
+        textpos = text.get_rect(centerx=DISPLAYSURF.get_width()/2)
+        DISPLAYSURF.blit(text, textpos)
+    else:
+	print "fonts disabled"
 def renderCharacter():
     global posX,posY,boardArr, DISPLAYSURF,direction
     myimage = pygame.image.load("rightCharacter.png")
@@ -210,6 +206,7 @@ def renderScreen():
 	    startPos = 300-posY*50
 	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,startPos+i*50,50,50),0)
 	    pygame.draw.rect(DISPLAYSURF,WHITE,pygame.Rect(j*50,startPos+i*50,50,50),5)
+    renderScoreAndStomach()
     renderCharacter()
     pygame.display.flip()
 	    
