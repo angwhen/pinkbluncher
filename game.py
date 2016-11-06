@@ -132,6 +132,14 @@ def getEatGroup(goal,tileType):
     return group
 
 def collapse():
+   global posX,posY,boardArr
+   for i in xrange(0,boardArrHeight):
+	for j in xrange(0,10):
+	    if boardArr[i+1,j] == 0:
+		boardArr[i+1,j] = boardArr[i,j]
+		boardArr[i,j] = 0
+   while (boardArr[posY+1,posX] == 0):
+	posY += 1
 
 def canMove(goal):
     if goal[0] < 0 or goal[1] < 0 or goal[0] >=10:
