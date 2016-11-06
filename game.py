@@ -171,14 +171,11 @@ def collapseGroup(group):
 
 def collapse():
    global posX,posY,boardArr, collapseGroupHolder
-   for i in xrange(0,boardArrHeight-1):
+   for i in xrange(0,boardArrHeight-1): #can make faster by starting dif pos
 	for j in xrange(0,10):
-	    #if boardArr[i+1,j] == 0 and not(i+1==posY and j ==posX):
-		#if collapsable(i,j,0):		
-		 #   boardArr[i+1,j] = boardArr[i,j]
-		  #  boardArr[i,j] = 0
-	    #if not boardArr[i+1,j] == 0 and i+1 == posY and j == posX:
-		#die()
+	    startPos = 300-posY*50
+	    if startPos+i*50 > 1000:
+		break
 	    collapseGroupHolder = np.zeros((boardArrHeight,10))
    	    group = getCollapseGroup(i,j,boardArr[i,j])
 	    if canCollapse(group):
@@ -253,11 +250,8 @@ def renderCharacter():
 	#myimage = pygame.image.load("rightCharacter.png")
 	#imagerect = myimage.get_rect()
     pygame.draw.polygon(DISPLAYSURF,(190,78,89), vertices, 0)
-    #pygame.draw.rect(DISPLAYSURF,(89,34,32),pygame.Rect(posX*50,300,50,50),0)
     print posY, ", ", posX
-    #print "hello"
-    #DISPLAYSURF.blit(myimage, imagerect)
-    #pygame.display.flip()
+
 	
 def renderScreen():
     global posX,posY,boardArr, boardArrHeight, DISPLAYSURF
@@ -282,6 +276,8 @@ def renderScreen():
 	    else:
 		color = WHITE
 	    startPos = 300-posY*50
+	    if startPos+i*50 > 1000:
+		break
 	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,startPos+i*50,50,50),0)
 	    pygame.draw.rect(DISPLAYSURF,WHITE,pygame.Rect(j*50,startPos+i*50,50,50),5)
     renderScoreAndStomach()
