@@ -138,6 +138,10 @@ def collapse():
 	    if boardArr[i+1,j] == 0:
 		boardArr[i+1,j] = boardArr[i,j]
 		boardArr[i,j] = 0
+   collapseCharacter()
+
+def collapseCharacter():
+   global posX,posY,boardArr
    while (boardArr[posY+1,posX] == 0):
 	posY += 1
 
@@ -164,6 +168,7 @@ def move(direction):
         elif direction == "down":
 	    posY += 1
     #if moving downwards move the screen downwards
+	collapseCharacter()
         renderScreen()
 
 def renderCharacter():
@@ -174,22 +179,22 @@ def renderCharacter():
 	myimage = pygame.image.load("rightCharacter.png")
 	imagerect = myimage.get_rect()
     #DISPLAYSURF.fill((255,255,255))
-    pygame.draw.rect(DISPLAYSURF,(89,34,32),pygame.Rect(posX*50,300+posY*50,50,50),0)
+    pygame.draw.rect(DISPLAYSURF,(89,34,32),pygame.Rect(posX*50,300,50,50),0)
+    print posY, ", ", posX
     #print "hello"
     #DISPLAYSURF.blit(myimage, imagerect)
     pygame.display.flip()
 	
 def renderScreen():
     global posX,posY,boardArr, boardArrHeight, DISPLAYSURF
-    startPos = posY-6
-    if startPos < 0: 
-	startPos = 0
+
     PINK = (255,0,128)
     PURPLE = (147,112,219)
     BLUE = (135,216,250)
     WHITE = (255,255,255)
     color = WHITE
-    for i in xrange(startPos,boardArrHeight):
+    DISPLAYSURF.fill((255,255,255))
+    for i in xrange(0,boardArrHeight):
 	for j in xrange(0,10):
 	    tileType = boardArr[i,j]
 	    if tileType == 1:
@@ -202,8 +207,9 @@ def renderScreen():
 		color = (0,0,0)
 	    else:
 		color = WHITE
-	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,300+i*50,50,50),0)
-	    pygame.draw.rect(DISPLAYSURF,WHITE,pygame.Rect(j*50,300+i*50,50,50),5)
+	    startPos = 300-posY*50
+	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,startPos+i*50,50,50),0)
+	    pygame.draw.rect(DISPLAYSURF,WHITE,pygame.Rect(j*50,startPos+i*50,50,50),5)
     renderCharacter()
     pygame.display.flip()
 	    
