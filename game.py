@@ -12,6 +12,8 @@ direction = "down"
 score = 0
 stomachSpace = 100
 numLives = 0
+collapseGroupHolder = np.zeros((boardArrHeight,10))
+
 def initBoardArr():
     global boardArr
     #initialize boardArr
@@ -64,6 +66,7 @@ def runGame():
                 elif event.key == K_SPACE: #eat
 		    print "eating direction is ", direction
                     eat(direction)
+		renderScreen()
 def canEat(goal):
     global boardArr
     if goal[0] < 0 or goal[1] < 0 or goal[1] >=10:
@@ -101,7 +104,6 @@ def eat(direction):
 
 def getEatGroup(goal,tileType):
     global boardArr, score
-    group = []
     row = goal[0]
     col = goal[1]
     print "tile type is: ",boardArr[row,col]
@@ -116,15 +118,73 @@ def getEatGroup(goal,tileType):
         getEatGroup((row+1,col),tileType)
     if row-1 >= 0 and boardArr[row-1][col] == tileType:
 	getEatGroup((row-1,col),tileType)
+ 
+
+def collapsable(row,col,num):
+    global boardArr
+    sameType = boardArr[row][col]
+    if sameType == 0:
+	return False
+    if col+1 <10 and (boardArr[row][col+1] == sameType or num>0): #right one
+	if not collapsable(row,col+1,num+1):
+	    return False
+    if row-1>=0 and (boardArr[row-1][col] == sameType or num>0):
+	if not collapsable(row-1,col,num+1):
+	    return False
+    return True
+
+def getCollapseGroup(row,col,tileType): #new group collapsing methods is ???
+    global boardArr, score, collapseGroupHolder
+    group = []
+    done = 0
+    if collapseGroupHolder[row][col] == 0:
+    	group.append((row,col))
+    collapseGroupHolder[row][col] = 1
+    if col+1 < 10 and boardArr[row][col+1] == tileType and collapseGroupHolder[row][col+1] == 0:
+        group.extend(getCollapseGroup(row,col+1,tileType))
+    if col-1 >= 0 and boardArr[row][col-1] == tileType and collapseGroupHolder[row][col-1] == 0:
+	group.extend(getCollapseGroup(row,col-1,tileType))
+    if row+1 < boardArrHeight and boardArr[row+1][col] == tileType and collapseGroupHolder[row+1][col] == 0:    	
+        group.extend(getCollapseGroup(row+1,col,tileType))
+    if row-1 >= 0 and boardArr[row-1][col] == tileType and collapseGroupHolder[row-1][col] == 0:
+	group.extend(getCollapseGroup(row-1,col,tileType))
+    if group != []:
+	print group, " this is group"
     return group
 
+def canCollapse(group):
+    global boardArr
+    can = True
+    for i in group:
+	if (i[0]+1,i[1]) not in group and i[0]+1 < boardArrHeight and boardArr[i[0]+1,i[1]] != 0:
+	    can = False
+    if group != [] and can:
+	print "helloooo"
+    return can
+
+def collapseGroup(group):
+    global boardArr
+    for i in group:
+	if i[0]+1 < boardArrHeight:
+	    boardArr[i[0]+1,i[1]] = boardArr[i[0],i[1]]
+            boardArr[i[0],i[1]] = 0
+
 def collapse():
-   global posX,posY,boardArr
+   global posX,posY,boardArr, collapseGroupHolder
    for i in xrange(0,boardArrHeight-1):
 	for j in xrange(0,10):
-	    if boardArr[i+1,j] == 0 and not(i+1==posY and j ==posX):
-		boardArr[i+1,j] = boardArr[i,j]
-		boardArr[i,j] = 0
+	    #if boardArr[i+1,j] == 0 and not(i+1==posY and j ==posX):
+		#if collapsable(i,j,0):		
+		 #   boardArr[i+1,j] = boardArr[i,j]
+		  #  boardArr[i,j] = 0
+	    #if not boardArr[i+1,j] == 0 and i+1 == posY and j == posX:
+		#die()
+	    collapseGroupHolder = np.zeros((boardArrHeight,10))
+   	    group = getCollapseGroup(i,j,boardArr[i,j])
+	    if canCollapse(group):
+		collapseGroup(group)
+	    if not group == []:
+		print group
    collapseCharacter()
 
 def collapseCharacter():
@@ -181,13 +241,19 @@ def renderScoreAndStomach():
 	print "fonts disabled"
 def renderCharacter():
     global posX,posY,boardArr, DISPLAYSURF,direction
-    myimage = pygame.image.load("rightCharacter.png")
-    imagerect = myimage.get_rect()
+    #myimage = pygame.image.load("rightCharacter.png")
+    #imagerect = myimage.get_rect()
+    vertices = [(posX*50,300),(posX*50+50,300),(posX*50+25,300+50)]
     if direction == "right":
-	myimage = pygame.image.load("rightCharacter.png")
-	imagerect = myimage.get_rect()
-    #DISPLAYSURF.fill((255,255,255))
-    pygame.draw.rect(DISPLAYSURF,(89,34,32),pygame.Rect(posX*50,300,50,50),0)
+	vertices = [(posX*50,300),(posX*50+50,300+25),(posX*50,300+50)]
+    elif direction == "left":
+	vertices = [(posX*50+50,300),(posX*50+50,300+50),(posX*50,300+25)]
+    elif direction == "down":
+	vertices = [(posX*50,300),(posX*50+50,300),(posX*50+25,300+50)]
+	#myimage = pygame.image.load("rightCharacter.png")
+	#imagerect = myimage.get_rect()
+    pygame.draw.polygon(DISPLAYSURF,(190,78,89), vertices, 0)
+    #pygame.draw.rect(DISPLAYSURF,(89,34,32),pygame.Rect(posX*50,300,50,50),0)
     print posY, ", ", posX
     #print "hello"
     #DISPLAYSURF.blit(myimage, imagerect)
@@ -225,8 +291,8 @@ def renderScreen():
     #draw the screen where it should be
     
 
-#def die():
-    #what happens when you die
+def die():
+    print "collapsed on character" #what happens when you die
 
 
 if __name__ == '__main__':
