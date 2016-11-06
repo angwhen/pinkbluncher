@@ -110,7 +110,7 @@ def eat(direction):
 	getEatGroup(goal,boardArr[row,col]) 
 	#boardArr[row,col] = 0
         #other eating things
-	collapse()
+    collapse()
     renderScreen()
 
 def getEatGroup(goal,tileType):
@@ -133,7 +133,7 @@ def getEatGroup(goal,tileType):
 
 def collapse():
    global posX,posY,boardArr
-   for i in xrange(0,boardArrHeight):
+   for i in xrange(0,boardArrHeight-1):
 	for j in xrange(0,10):
 	    if boardArr[i+1,j] == 0:
 		boardArr[i+1,j] = boardArr[i,j]
