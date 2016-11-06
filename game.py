@@ -161,7 +161,7 @@ def move(direction):
 def renderScoreAndStomach():
     if pygame.font:
         font = pygame.font.Font(None, 36)
-	scoreText = "Score: %d  Belly Space: %d" %(score,stomachSpace)
+	scoreText = "Score: %d    Belly Space: %d" %(score,stomachSpace)
         text = font.render(scoreText, 1, (0, 0, 0))
         textpos = text.get_rect(centerx=DISPLAYSURF.get_width()/2)
         DISPLAYSURF.blit(text, textpos)
