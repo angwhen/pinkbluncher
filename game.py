@@ -74,7 +74,7 @@ def runGame():
 		    print "down pressed"
                     if(direction == "down"):
                         move(direction)
-                    direction == "down"
+                    direction = "down"
                 elif event.key == K_SPACE: #eat
 		    print "eating direction is ", direction
                     eat(direction)
@@ -107,20 +107,56 @@ def eat(direction):
 	fullness +=1
 	row = goal[0]
 	col = goal[1]
-	boardArr[row,col] = 0
+	getEatGroup(goal,boardArr[row,col]) 
+	#boardArr[row,col] = 0
         #other eating things
+	collapse()
     renderScreen()
-	
+
+def getEatGroup(goal,tileType):
+    global boardArr
+    group = []
+    row = goal[0]
+    col = goal[1]
+    print "tile type is: ",boardArr[row,col]
+    if boardArr[row][col] == tileType:
+    	boardArr[row][col] = 0
+    if col+1 < 10 and boardArr[row][col+1] == tileType:
+        getEatGroup((row,col+1),tileType)
+    if col-1 >= 0 and boardArr[row][col-1] == tileType:
+	getEatGroup((row,col-1),tileType)
+    if row+1 <10 and boardArr[row+1][col] == tileType:    	
+        getEatGroup((row+1,col),tileType)
+    if row-1 >= 0 and boardArr[row-1][col] == tileType:
+	getEatGroup((row-1,col),tileType)
+    return group
+
+def collapse():
+
+def canMove(goal):
+    if goal[0] < 0 or goal[1] < 0 or goal[0] >=10:
+	print "cant move because off screen"
+	return False
+    return not(canEat(goal))
+
 def move(direction):
     global posX, posY,boardArr
+    goal = (0,0)
     if direction == "right":
-        posX += 1
+        goal = (posY,posX+1)
     elif direction == "left":
-	posX = posX -1
+	goal = (posY,posX-1)
     elif direction == "down":
-	posY += 1
+	goal = (posY+1,posX)
+    if canMove(goal):
+        if direction == "right":
+            posX += 1
+        elif direction == "left":
+	    posX = posX -1
+        elif direction == "down":
+	    posY += 1
     #if moving downwards move the screen downwards
-    renderScreen()
+        renderScreen()
 
 def renderCharacter():
     global posX,posY,boardArr, DISPLAYSURF,direction
