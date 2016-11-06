@@ -148,8 +148,8 @@ def getCollapseGroup(row,col,tileType): #new group collapsing methods is ???
         group.extend(getCollapseGroup(row+1,col,tileType))
     if row-1 >= 0 and boardArr[row-1][col] == tileType and collapseGroupHolder[row-1][col] == 0:
 	group.extend(getCollapseGroup(row-1,col,tileType))
-    if group != []:
-	print group, " this is group"
+    #if group != []:
+	#print group, " this is group"
     return group
 
 def canCollapse(group):
@@ -158,8 +158,8 @@ def canCollapse(group):
     for i in group:
 	if (i[0]+1,i[1]) not in group and i[0]+1 < boardArrHeight and boardArr[i[0]+1,i[1]] != 0:
 	    can = False
-    if group != [] and can:
-	print "helloooo"
+    #if group != [] and can:
+	#print "helloooo"
     return can
 
 def collapseGroup(group):
@@ -183,8 +183,8 @@ def collapse():
    	    group = getCollapseGroup(i,j,boardArr[i,j])
 	    if canCollapse(group):
 		collapseGroup(group)
-	    if not group == []:
-		print group
+	    #if not group == []:
+		#print group
    collapseCharacter()
 
 def collapseCharacter():
@@ -257,7 +257,7 @@ def renderCharacter():
     print posY, ", ", posX
     #print "hello"
     #DISPLAYSURF.blit(myimage, imagerect)
-    pygame.display.flip()
+    #pygame.display.flip()
 	
 def renderScreen():
     global posX,posY,boardArr, boardArrHeight, DISPLAYSURF
