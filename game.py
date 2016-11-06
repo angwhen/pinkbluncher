@@ -66,7 +66,7 @@ def runGame():
                     eat(direction)
 def canEat(goal):
     global boardArr
-    if goal[0] < 0 or goal[1] < 0 or goal[0] >=10:
+    if goal[0] < 0 or goal[1] < 0 or goal[1] >=10:
 	print "cant eat because off screen"
 	return False
     row = goal[0]
@@ -105,14 +105,14 @@ def getEatGroup(goal,tileType):
     row = goal[0]
     col = goal[1]
     print "tile type is: ",boardArr[row,col]
-    if boardArr[row][col] == tileType:
-    	boardArr[row][col] = 0
-	score += 1
+    #if boardArr[row][col] == tileType:
+    boardArr[row][col] = 0
+    score += 1
     if col+1 < 10 and boardArr[row][col+1] == tileType:
         getEatGroup((row,col+1),tileType)
     if col-1 >= 0 and boardArr[row][col-1] == tileType:
 	getEatGroup((row,col-1),tileType)
-    if row+1 <10 and boardArr[row+1][col] == tileType:    	
+    if boardArr[row+1][col] == tileType:    	
         getEatGroup((row+1,col),tileType)
     if row-1 >= 0 and boardArr[row-1][col] == tileType:
 	getEatGroup((row-1,col),tileType)
@@ -133,8 +133,8 @@ def collapseCharacter():
 	posY += 1
 
 def canMove(goal):
-    if goal[0] < 0 or goal[1] < 0 or goal[0] >=10:
-	print "cant move because off screen"
+    if goal[0] < 0 or goal[1] < 0 or goal[1] >=10:
+	print "cant move because off screen y: ",goal[0]," x: ",goal[1]
 	return False
     return not(canEat(goal))
 
@@ -154,9 +154,21 @@ def move(direction):
 	    posX = posX -1
         elif direction == "down":
 	    posY += 1
+    elif canMove((goal[0]-1,goal[1])):
+ 	if direction == "right":
+            posX += 1
+        elif direction == "left":
+	    posX -= 1
+	posY -= 1
+    elif canMove((goal[0]+1,goal[1])):
+ 	if direction == "right":
+            posX += 1
+        elif direction == "left":
+	    posX -= 1
+	posY += 1
     #if moving downwards move the screen downwards
-	collapse()
-        renderScreen()
+    collapse()
+    renderScreen()
 
 def renderScoreAndStomach():
     if pygame.font:
