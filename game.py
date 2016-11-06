@@ -17,6 +17,7 @@ def initBoardArr():
     #initialize boardArr
     choices = [1,2,3,4,5] #pink, purple, blue, 100 point jewels, 200 point jewels
     boardArr = np.random.choice(choices,(boardArrHeight,10),p=[0.3,0.3,0.3,0.05,0.05])
+    boardArr[posY,posX] = 0
     print boardArr
     #print "HIIII"
     #print "hey"
@@ -57,34 +58,67 @@ def runGame():
         for event in pygame.event.get(): # event handling loop
             if event.type == KEYDOWN:
                 if (event.key == K_LEFT or event.key == K_a):
+		    print "left pressed"
                     if(direction == "left"):
                         move(direction)
                     direction = "left"
                 elif (event.key == K_RIGHT or event.key == K_d) :
-                    if(direction == "right"):
+                    print "right pressed"
+		    if(direction == "right"):
                         move(direction)
                     direction = "right"
                 elif (event.key == K_UP or event.key == K_w):
+		    print "up pressed"
                     direction == "up"
                 elif (event.key == K_DOWN or event.key == K_s):
+		    print "down pressed"
                     if(direction == "down"):
                         move(direction)
                     direction == "down"
                 elif event.key == K_SPACE: #eat
+		    print "eating direction is ", direction
                     eat(direction)
-#def canEat(x,y):
+def canEat(goal):
+    global boardArr
+    if goal[0] < 0 or goal[1] < 0 or goal[0] >=10:
+	print "cant eat because off screen"
+	return False
+    row = goal[0]
+    col = goal[1]
+    if boardArr[row,col] == 0:
+	print "cant eat because empty there: " ,direction
+        return False
+    else:
+	return True 
     #return true or false based on if can eat
+
 def eat(direction):
-    global posX,posY,boardArr, score
+    global posX,posY,boardArr,fullness, score
     goal = (0,0)
-#    if (direction == "right"):
-#        goal = ()
+    if direction == "right":
+        goal = (posY,posX+1)
+    elif direction == "left":
+	goal = (posY,posX-1)
+    elif direction == "down":
+	goal = (posY+1,posX)
+	
     #say where the goal to eat is
-#    if canEat(goal):
-#        fullness +=1
+    if canEat(goal): 
+	fullness +=1
+	row = goal[0]
+	col = goal[1]
+	boardArr[row,col] = 0
         #other eating things
+    renderScreen()
+	
 def move(direction):
     global posX, posY,boardArr
+    if direction == "right":
+        posX += 1
+    elif direction == "left":
+	posX = posX -1
+    elif direction == "down":
+	posY += 1
     #if moving downwards move the screen downwards
     renderScreen()
 
@@ -95,14 +129,14 @@ def renderCharacter():
     if direction == "right":
 	myimage = pygame.image.load("rightCharacter.png")
 	imagerect = myimage.get_rect()
-    DISPLAYSURF.fill((255,255,255))
-    print "hello"
-    DISPLAYSURF.blit(myimage, imagerect)
+    #DISPLAYSURF.fill((255,255,255))
+    pygame.draw.rect(DISPLAYSURF,(89,34,32),pygame.Rect(posX*50,300+posY*50,50,50),0)
+    #print "hello"
+    #DISPLAYSURF.blit(myimage, imagerect)
     pygame.display.flip()
 	
 def renderScreen():
     global posX,posY,boardArr, boardArrHeight, DISPLAYSURF
-    renderCharacter()
     startPos = posY-6
     if startPos < 0: 
 	startPos = 0
@@ -120,8 +154,13 @@ def renderScreen():
 		color = PURPLE
 	    elif tileType == 3:
 		color = BLUE
+	    elif tileType == 4 or tileType == 5:
+		color = (0,0,0)
+	    else:
+		color = WHITE
 	    pygame.draw.rect(DISPLAYSURF,color,pygame.Rect(j*50,300+i*50,50,50),0)
 	    pygame.draw.rect(DISPLAYSURF,WHITE,pygame.Rect(j*50,300+i*50,50,50),5)
+    renderCharacter()
     pygame.display.flip()
 	    
     #draw the screen where it should be
